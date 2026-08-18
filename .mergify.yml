@@ -1,0 +1,15 @@
+merge_protections:
+  - name: require-review-and-ci
+    if:
+      - base = main
+    success_conditions:
+      - "#approved-reviews-by >= 1"
+      - check-success = ci
+
+pull_request_rules:
+  - name: automatic approval
+    conditions:
+      - label = approve-me
+    actions:
+      review:
+        type: APPROVE
