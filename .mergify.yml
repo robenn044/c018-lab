@@ -1,3 +1,10 @@
+# main is the protected branch. It is protected by GitHub itself: the repository
+# ruleset requires one approving review. Mergify is NOT a bypass actor.
+#
+# release is a maintenance branch with a lighter policy.
+merge_protections_settings:
+  auto_merge_conditions: true
+
 merge_protections:
   - name: require-review-and-ci
     if:
@@ -6,10 +13,18 @@ merge_protections:
       - "#approved-reviews-by >= 1"
       - check-success = ci
 
+  - name: green-on-release
+    if:
+      - base = release
+    success_conditions:
+      - check-success = ci
+
 pull_request_rules:
+  # docs.mergify.com/workflow/actions/review/ "automatic approval", scoped to the
+  # maintenance branch with the condition pattern the vendor lists first.
   - name: automatic approval
     conditions:
-      - label = approve-me
+      - base = release
     actions:
       review:
         type: APPROVE
